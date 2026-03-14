@@ -1,38 +1,72 @@
-# Secrets & credentials
+# ==============================================================================
+# .gitignore — Apple & Tesla Market Intelligence Pipeline
+# NEVER commit secrets, credentials, state files, or personal config.
+# ==============================================================================
+
+# ── Secrets & credentials ──────────────────────────────────────────────────────
 .env
+.env.*
+!.env.example
+
+# All JSON files are excluded by default (service account keys, etc.)
+# Only the BigQuery schema definitions are safe to commit.
+*.json
+!terraform/schemas/*.json
+
+# GCP service account key files (belt-and-suspenders)
+*service_account*.json
+*credentials*.json
+*keyfile*.json
+
+# All credential directories
 credentials/
 airflow/credentials/
 terraform/credentials/
-*.json
-!terraform/schemas/*.json  # Schema files are safe to commit
 
-# Terraform
+# ── Terraform ──────────────────────────────────────────────────────────────────
 terraform/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.backup
-terraform/*.tfvars
 terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+!terraform/*.tfvars.example
 
-# dbt
+# ── dbt ────────────────────────────────────────────────────────────────────────
 dbt/target/
 dbt/dbt_packages/
 dbt/logs/
+dbt/.user.yml
 
-# Airflow
+# ── Airflow ────────────────────────────────────────────────────────────────────
 airflow/logs/
 airflow/plugins/
 
-# Python
+# ── Python ─────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
+*.pyo
 *.egg-info/
 .venv/
 venv/
+env/
 dist/
 build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Local data
-/tmp/market_data/
+# ── IDE & tools ────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+.cursor/
+.claude/
+*.swp
+*.swo
 
-# macOS
+# ── macOS ──────────────────────────────────────────────────────────────────────
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# ── Local data ─────────────────────────────────────────────────────────────────
+/tmp/market_data/

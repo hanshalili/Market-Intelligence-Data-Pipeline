@@ -1,0 +1,86 @@
+[
+  {
+    "name": "date",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "Trading date (partition key)"
+  },
+  {
+    "name": "symbol",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Ticker symbol: AAPL, TSLA, or SPY (cluster key)"
+  },
+  {
+    "name": "adjusted_close",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "Dividend and split adjusted closing price"
+  },
+  {
+    "name": "volume",
+    "type": "INT64",
+    "mode": "NULLABLE",
+    "description": "Shares traded"
+  },
+  {
+    "name": "daily_return",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "Percentage return vs previous trading day"
+  },
+  {
+    "name": "cumulative_return",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "Cumulative return from the first available date"
+  },
+  {
+    "name": "sma_20",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "20-day simple moving average of adjusted close"
+  },
+  {
+    "name": "sma_50",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "50-day simple moving average of adjusted close"
+  },
+  {
+    "name": "sma_200",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "200-day simple moving average of adjusted close"
+  },
+  {
+    "name": "rolling_volatility_20d",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "Annualised standard deviation of daily returns over 20 days"
+  },
+  {
+    "name": "drawdown",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "Percentage decline from the rolling 52-week high"
+  },
+  {
+    "name": "spy_daily_return",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "SPY daily return on the same date (benchmark)"
+  },
+  {
+    "name": "excess_return_vs_spy",
+    "type": "FLOAT64",
+    "mode": "NULLABLE",
+    "description": "Stock daily_return minus SPY daily_return (alpha proxy)"
+  },
+  {
+    "name": "transformed_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "UTC timestamp when dbt produced this row"
+  }
+]

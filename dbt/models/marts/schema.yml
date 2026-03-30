@@ -6,7 +6,7 @@ models:
       Analytics mart table: daily financial metrics for AAPL, TSLA, and SPY.
       Partitioned by date, clustered by symbol.
       Produced by dbt transformations from the stg_stock_prices staging view.
-      Consumed by the Looker Studio dashboard.
+      Consumed by the Plotly dashboard.
 
     # Model-level tests — uniqueness constraint across two columns
     tests:

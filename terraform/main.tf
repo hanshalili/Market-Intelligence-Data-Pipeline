@@ -163,7 +163,7 @@ resource "google_bigquery_dataset" "market_analytics" {
 # Staging table: raw, lightly-cleaned stock prices loaded by Airflow
 resource "google_bigquery_table" "stg_stock_prices" {
   dataset_id          = google_bigquery_dataset.market_analytics.dataset_id
-  table_id            = "stg_stock_prices"
+  table_id            = "raw_stock_prices"
   description         = "Staging table: daily adjusted stock prices loaded from GCS Parquet"
   deletion_protection = false
 

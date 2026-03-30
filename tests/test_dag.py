@@ -59,7 +59,7 @@ def test_config_defaults():
         gcs_bucket_name="test-bucket",
     )
     assert cfg.bq_dataset == "market_analytics"
-    assert cfg.bq_staging_table == "stg_stock_prices"
+    assert cfg.bq_staging_table == "raw_stock_prices"
     assert cfg.api_sleep_seconds >= 0
 
 

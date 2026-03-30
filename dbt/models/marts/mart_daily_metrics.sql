@@ -2,7 +2,7 @@
   mart_daily_metrics.sql — Analytics mart: financial metrics for AAPL, TSLA, SPY
 
   Source:  stg_stock_prices (staging view)
-  Purpose: Compute all financial metrics used in the Looker Studio dashboard.
+  Purpose: Compute all financial metrics used in the Plotly dashboard.
 
   Materialisation: TABLE, partitioned by date, clustered by symbol.
   This means BigQuery will:
@@ -192,8 +192,8 @@ final AS (
     FROM volatility AS v
     LEFT JOIN spy_returns AS spy
         ON v.date = spy.date
-    -- Exclude SPY from the excess return calculation rows
-    -- (SPY's own excess return would be 0 by definition)
+    -- SPY is included as a row; its excess_return_vs_spy will be 0.0 by definition
+    -- (SPY return minus SPY return = 0), which is correct and intentional.
 )
 
 SELECT * FROM final

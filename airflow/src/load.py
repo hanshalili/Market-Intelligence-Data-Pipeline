@@ -75,7 +75,13 @@ def load_parquet_to_bigquery(execution_date: date) -> int:
     row_count = len(df)
     logger.info("Preparing to load %d rows into BigQuery for date=%s", row_count, execution_date)
 
-    table_ref = f"{config.gcp_project_id}.{config.bq_dataset}.{config.bq_staging_table}"
+    # Append the partition decorator ($YYYYMMDD) so WRITE_TRUNCATE replaces only
+    # this date's partition, not the entire table.
+    partition_suffix = execution_date.strftime("%Y%m%d")
+    table_ref = (
+        f"{config.gcp_project_id}.{config.bq_dataset}.{config.bq_staging_table}"
+        f"${partition_suffix}"
+    )
 
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
@@ -121,6 +127,7 @@ def verify_load(execution_date: date) -> int:
     query = f"""
         SELECT COUNT(*) AS row_count
         FROM `{config.gcp_project_id}.{config.bq_dataset}.{config.bq_staging_table}`
+        WHERE date = '{execution_date.isoformat()}'
     """
 
     result = bq_client.query(query).result()

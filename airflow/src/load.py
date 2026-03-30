@@ -67,13 +67,24 @@ def load_parquet_to_bigquery(execution_date: date) -> int:
         )
         return 0
 
+    # Filter to the execution date only — the Parquet contains full history
+    # but the partition decorator requires all rows to belong to this one date.
+    df["date"] = pd.to_datetime(df["date"]).dt.date
+    df = df[df["date"] == execution_date].copy()
+
+    if df.empty:
+        logger.warning(
+            "No rows for date=%s in Parquet (market holiday or weekend?). "
+            "Skipping BigQuery load.",
+            execution_date,
+        )
+        return 0
+
     # Add audit timestamp
     df["ingested_at"] = datetime.now(tz=timezone.utc)
 
     # Deduplicate: keep latest row per (date, symbol) in case of re-runs
-    df = df.sort_values("ingested_at").drop_duplicates(
-        subset=["date", "symbol"], keep="last"
-    )
+    df = df.drop_duplicates(subset=["date", "symbol"], keep="last")
 
     row_count = len(df)
     logger.info(
@@ -97,6 +108,7 @@ def load_parquet_to_bigquery(execution_date: date) -> int:
             type_=bigquery.TimePartitioningType.DAY,
             field="date",
         ),
+        clustering_fields=["symbol"],  # Must match table definition
     )
 
     logger.info("Loading %d rows into table: %s", len(df), table_ref)

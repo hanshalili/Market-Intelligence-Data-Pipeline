@@ -21,7 +21,7 @@ x-airflow-common: &airflow-common
     &airflow-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     # Use the non-deprecated [database] section key
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${POSTGRES_PASSWORD}@postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY}
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
@@ -63,7 +63,7 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: airflow
     volumes:
       - postgres-db:/var/lib/postgresql/data
@@ -84,11 +84,11 @@ services:
       <<: *airflow-env
       _AIRFLOW_DB_MIGRATE: "true"
       _AIRFLOW_WWW_USER_CREATE: "true"
-      _AIRFLOW_WWW_USER_USERNAME: "admin"
-      _AIRFLOW_WWW_USER_PASSWORD: "admin"
-      _AIRFLOW_WWW_USER_FIRSTNAME: "Admin"
-      _AIRFLOW_WWW_USER_LASTNAME: "User"
-      _AIRFLOW_WWW_USER_EMAIL: "admin@example.com"
+      _AIRFLOW_WWW_USER_USERNAME: ${AIRFLOW_ADMIN_USERNAME:-admin}
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD}
+      _AIRFLOW_WWW_USER_FIRSTNAME: ${AIRFLOW_ADMIN_FIRSTNAME:-Admin}
+      _AIRFLOW_WWW_USER_LASTNAME: ${AIRFLOW_ADMIN_LASTNAME:-User}
+      _AIRFLOW_WWW_USER_EMAIL: ${AIRFLOW_ADMIN_EMAIL:-admin@example.com}
       _AIRFLOW_WWW_USER_ROLE: "Admin"
       _PIP_ADDITIONAL_REQUIREMENTS: ""
     command: version

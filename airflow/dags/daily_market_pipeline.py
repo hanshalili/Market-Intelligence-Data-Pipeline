@@ -37,10 +37,10 @@ DEFAULT_ARGS = {
     "depends_on_past": False,
     "email_on_failure": False,
     "email_on_retry": False,
-    "retries": 2,
-    "retry_delay": timedelta(minutes=5),
+    "retries": 3,
+    "retry_delay": timedelta(minutes=2),
     "retry_exponential_backoff": True,
-    "max_retry_delay": timedelta(minutes=30),
+    "max_retry_delay": timedelta(hours=1),
 }
 
 # ---------------------------------------------------------------------------

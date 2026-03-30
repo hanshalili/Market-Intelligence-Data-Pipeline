@@ -81,16 +81,31 @@ def fetch_daily_adjusted(
         )
 
     if "Note" in payload:
-        # Free-tier rate-limit warning
-        raise RuntimeError(
-            f"Alpha Vantage rate limit reached for {symbol}. "
-            f"Message: {payload['Note']}. "
-            "Wait 1 minute or upgrade your API key."
+        # Per-minute rate limit (5 req/min on free tier) — sleep and retry once
+        logger.warning(
+            "Alpha Vantage per-minute rate limit hit for %s. Sleeping 65s then retrying.",
+            symbol,
         )
+        time.sleep(65)
+        response = requests.get(
+            config.alpha_vantage_base_url, params=params, timeout=30
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if "Note" in payload or "Information" in payload:
+            raise RuntimeError(
+                f"Alpha Vantage rate limit still active for {symbol} after retry. "
+                "You may have exhausted your 25 req/day free quota. "
+                "Wait until tomorrow or upgrade your API key."
+            )
 
     if "Information" in payload:
+        # Daily quota exhausted (25 req/day on free tier)
         raise RuntimeError(
-            f"Alpha Vantage returned informational message for {symbol}: {payload['Information']}"
+            f"Alpha Vantage daily quota exhausted for {symbol}. "
+            f"Message: {payload['Information']} "
+            "The free tier allows 25 requests/day. "
+            "Wait until tomorrow UTC midnight or upgrade at alphavantage.co/premium."
         )
 
     time_series_key = "Time Series (Daily)"

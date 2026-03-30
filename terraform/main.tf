@@ -15,14 +15,10 @@ terraform {
 
   # Remote state on GCS — keeps tfstate (which contains the SA private key)
   # off local disk and enables state locking to prevent concurrent applies.
-  # The bucket must exist before `terraform init` (bootstrapped on first run).
-  # Comment this block out on first run if the bucket doesn't exist yet,
-  # then uncomment and run `terraform init -migrate-state` after apply.
-  #
-  # backend "gcs" {
-  #   bucket = "market-intelligence-project-market-data-lake"
-  #   prefix = "terraform/state"
-  # }
+  backend "gcs" {
+    bucket = "market-intelligence-project-market-data-lake"
+    prefix = "terraform/state"
+  }
 }
 
 provider "google" {

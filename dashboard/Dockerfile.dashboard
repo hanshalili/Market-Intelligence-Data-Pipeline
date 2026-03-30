@@ -20,9 +20,17 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Install Chromium for Kaleido PNG export
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    chromium \
+    chromium-driver \
+    fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies first (layer-cached unless requirements.txt changes)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && \
+    plotly_get_chrome || true
 
 # Copy source — overridden at runtime by the /app volume mount in Makefile,
 # so this layer is only used when running the image without the mount.
